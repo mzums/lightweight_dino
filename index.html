@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Game</title>
+  <style>body{margin:0;overflow:hidden;font-family:sans-serif;background:linear-gradient(135deg,#4facfe,#00f2fe);color:white;display:flex;align-items:center;justify-content:center;height:100vh}canvas{background:#222;display:block;border:3px solid#fff}h1{position:absolute;top:10px;left:10px;font-size:1.2em;margin:0}</style>
+</head>
+<body>
+  <h1>Jump with space! Score: <span id="s">0</span></h1>
+  <canvas id="c"></canvas>
+  <script>
+    const x=document.getElementById('c'),y=x.getContext('2d');x.width=window.innerWidth;x.height=window.innerHeight;
+    let p={x:50,y:x.height-50,s:30,d:0,g:0.7,j:-15,b:true},o=[],f=0,s=0,speed=5;
+    function spawn(){const h=Math.random()*50+20;o.push({x:x.width,y:x.height-h,w:20,h});}
+    function update(){p.d+=p.g;p.y+=p.d;if(p.y>x.height-p.s){p.y=x.height-p.s;p.d=0;p.b=true;}o.forEach((ob,i)=>{ob.x-=speed;if(ob.x+ob.w<0)o.splice(i,1);if(p.x<ob.x+ob.w&&p.x+p.s>ob.x&&p.y<ob.y+ob.h&&p.y+p.s>ob.y){alert('Game over! Score: '+s);document.location.reload();}});
+      s++;speed=5+Math.floor(s/500);if(f%Math.max(100-Math.floor(s/100),30)==0)spawn();f++;document.getElementById('s').textContent=s;}
+    function draw(){y.clearRect(0,0,x.width,x.height);y.fillStyle='lime';y.fillRect(p.x,p.y,p.s,p.s);y.fillStyle='red';o.forEach(ob=>{y.fillRect(ob.x,ob.y,ob.w,ob.h);});}
+    function gameLoop(){update();draw();requestAnimationFrame(gameLoop);}
+    window.addEventListener('keydown',(e)=>{if(e.code==='Space'&&p.b){p.d=p.j;p.b=false;}});
+    gameLoop();
+  </script>
+</body>
+</html>
